@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .page{
+            padding: 30px;
+        }
+        
+        .search{
+            display: flex;
+            justify-content: center;
+            border: 1px double blue;
+        }
+        .products{
+            display: flex;
+            justify-content: center;
+            border: 1px double greenyellow;
+        }
+        .orientation{
+            display: flex;
+            justify-content: center;
+            border: 1px double grey
+        }
+        .product{
+            margin: 15px;
+            padding: 15px;
+            border: 1px double black;
+        }
+        .products div:first-child{
+            border: 5px double red;
+        }
+        .span_1{
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Описать класс продукт (url-фото, имя, категория, цена и вес). И создать коллекцию на 12 продуктов.
+    Вывести в виде карточек 5 товаров на страницу, выделив первый (через css и :first) -->
+
+    <!-- В дополнение к прошлой дз дописать поиск -->
+
+    <div id="app"></div>
+
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        class Product extends React.Component{
+            render() {
+                return(
+                    <div class='product'>
+                        <img src={this.props.url_photo}/>
+                        <p class='name'>name: {this.props.name}</p>
+                        <p class='category'>category: {this.props.category}</p>
+                        <p class='price'>price: {this.props.price}</p>
+                        <p class='weight'>weight: {this.props.weight}</p>
+                    </div>
+                );
+            }
+        }
+
+        class Board extends React.Component{
+            constructor(props){
+                super(props);
+                this.state = props;
+                this.state.page = 0;
+                this.state.search = false;
+                this.state.searchValue = '';
+
+                this.handleChange = this.handleChange.bind(this);
+                this.handleSubmit = this.handleSubmit.bind(this);
+            }
+
+            renderProduct(arr){
+                return <Product url_photo={arr[0]} name={arr[1]} category={arr[2]} price={arr[3]} weight={arr[4]} />
+            }
+
+            getArr(){
+                let arr = Array();
+                this.state.products.forEach(product => {
+                    if (!this.state.search || product[1].includes(this.state.searchValue)) {
+                        arr.push(this.renderProduct(product))
+                    }
+                });
+                return <div class="products">{arr.slice(this.state.page * 5, this.state.page * 5 + 5)}</div>
+            }
+
+            handleChange(event){
+                this.setState({searchValue: event.target.value})
+            }
+
+            handleSubmit(event) {
+                this.setState({search: true})
+                event.preventDefault();
+            }
+            
+            render(){
+                return (
+                    <div class = "page">
+                        <div class="search">
+                            <form  onSubmit={this.handleSubmit}>
+                                <label>
+                                    Search:
+                                    <input type="text" placeholder="Enter your request" name="search" onChange={this.handleChange} />
+                                </label>
+                                <input type="reset" value="Reset" onClick={()=>{this.state.search = false; this.forceUpdate();}} />
+                                <input type="submit" value="Send" />
+                            </form>
+                        </div>
+
+                        {this.getArr()}
+
+                        <div class="orientation">
+                            <button
+                                class = 'button'
+                                onClick = {() => this.setState({page: this.state.page - 1})}
+                            >
+                            pref
+                            </button>
+                            <span class="span_1">page: {this.state.page}</span>
+                            <button
+                                class = 'button'
+                                onClick = {() => this.setState({page: this.state.page + 1})}
+                            >
+                            next
+                            </button>
+                        </div>
+
+                    </div>
+                );
+            }
+        }
+
+        const products = [
+            ['image\\products\\1.png', 'name_1', 'category_1', 'price_1', 'weight_1'],
+            ['image\\products\\2.png', 'name_2', 'category_2', 'price_2', 'weight_2'],
+            ['image\\products\\3.png', 'name_3', 'category_3', 'price_3', 'weight_3'],
+            ['image\\products\\4.png', 'name_4', 'category_4', 'price_4', 'weight_4'],
+            ['image\\products\\5.png', 'name_5', 'category_5', 'price_5', 'weight_5'],
+            ['image\\products\\6.png', 'name_6', 'category_6', 'price_6', 'weight_6'],
+            ['image\\products\\7.png', 'name_7', 'category', 'price', 'weight'],
+            ['image\\products\\8.png', 'name_8', 'category', 'price', 'weight'],
+            ['image\\products\\9.png', 'name_9', 'category', 'price', 'weight'],
+            ['image\\products\\10.png', 'name_10', 'category', 'price', 'weight'],
+            ['image\\products\\11.png', 'name_11', 'category', 'price', 'weight'],
+            ['image\\products\\12.png', 'name_12', 'category', 'price', 'weight'],
+        ];
+
+        ReactDOM.render(
+            <Board products={products} />,
+            document.getElementById('app')
+        );
+    </script>
+
+</body>
+</html>
